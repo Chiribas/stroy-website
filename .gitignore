@@ -1,0 +1,32 @@
+# Environment
+.env
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Uploads
+uploads/
+
+# Node
+node_modules/
+.nuxt/
+dist/
+
+# Docker
+docker/ssl/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# .NET
+bin/
+obj/
+*.user
+
+# Logs
+logs/
+*.log
