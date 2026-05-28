@@ -11,4 +11,5 @@ public class Article
     public DateTime PublishedAt { get; set; }
     public bool IsPublished { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<ArticleMedia> Media { get; set; } = new();
 }

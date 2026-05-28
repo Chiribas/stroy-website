@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<ServicePrice> ServicePrices => Set<ServicePrice>();
     public DbSet<Callback> Callbacks => Set<Callback>();
     public DbSet<Contact> Contacts => Set<Contact>();
+    public DbSet<ArticleMedia> ArticleMedia => Set<ArticleMedia>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +24,17 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Title).IsRequired();
             entity.Property(e => e.Slug).IsRequired();
             entity.Property(e => e.Content).IsRequired();
+        });
+
+        modelBuilder.Entity<ArticleMedia>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Path).IsRequired();
+            entity.Property(e => e.MediaType).IsRequired();
+            entity.HasOne(e => e.Article)
+                .WithMany(a => a.Media)
+                .HasForeignKey(e => e.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<ServicePrice>(entity =>
