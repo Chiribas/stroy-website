@@ -3,13 +3,15 @@ import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
+import { Iframe } from '~/lib/tiptap-iframe'
+import { toEmbedUrl } from '~/lib/video'
 
 const props = defineProps<{ modelValue: string; articleId?: number }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const editor = useEditor({
   content: props.modelValue,
-  extensions: [StarterKit, Link.configure({ openOnClick: false }), Image],
+  extensions: [StarterKit, Link.configure({ openOnClick: false }), Image, Iframe],
   onUpdate: ({ editor }) => emit('update:modelValue', editor.getHTML()),
 })
 
@@ -22,12 +24,18 @@ watch(() => props.modelValue, (value) => {
 })
 
 function addVideo() {
-  const url = window.prompt('Ссылка на видео (VK / Rutube / YouTube):')
-  if (!url) return
-  // Wrap as iframe; backend sanitizer enforces the domain whitelist.
-  editor.value?.chain().focus().insertContent(
-    `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`,
-  ).run()
+  const input = window.prompt(
+    'Ссылка на видео (VK / Rutube / YouTube) или код для вставки (iframe).\n' +
+    'Для приватных видео ВК вставьте код из «Поделиться → Экспортировать».',
+  )
+  if (!input) return
+  const src = toEmbedUrl(input)
+  if (!src) {
+    window.alert('Не удалось распознать ссылку. Поддерживаются YouTube, Rutube, VK Video.')
+    return
+  }
+  // Insert as an iframe node; backend sanitizer enforces the trusted-host whitelist.
+  editor.value?.chain().focus().insertContent({ type: 'iframe', attrs: { src } }).run()
 }
 
 function onMediaUploaded(media: { url: string }) {
