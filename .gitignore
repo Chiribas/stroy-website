@@ -26,6 +26,7 @@ docker/ssl/
 
 # IDE
 .vscode/
+.vs/
 .idea/
 *.swp
 *.swo

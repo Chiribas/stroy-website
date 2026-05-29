@@ -16,6 +16,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS только для dev: в проде фронт ходит через nginx на тот же origin (/api).
+const string DevCorsPolicy = "dev";
+builder.Services.AddCors(options => options.AddPolicy(DevCorsPolicy, policy =>
+    policy.WithOrigins("http://localhost:3001", "http://127.0.0.1:3001")
+          .AllowAnyHeader()
+          .AllowAnyMethod()));
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -27,6 +34,7 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(DevCorsPolicy);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
