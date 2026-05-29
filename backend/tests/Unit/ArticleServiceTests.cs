@@ -69,12 +69,12 @@ public class ArticleServiceTests
         using var db = NewDb();
         var sut = NewSut(db);
         var draft = await sut.CreateAsync(new CreateArticleDto { Title = "T", Slug = "t", Content = "<p>t</p>", IsPublished = false });
-        Assert.Equal(default, draft.PublishedAt);
+        Assert.Null(draft.PublishedAt);
 
         var updated = await sut.UpdateAsync(draft.Id, new UpdateArticleDto { Title = "T", Content = "<p>t</p>", IsPublished = true });
 
         Assert.NotNull(updated);
-        Assert.NotEqual(default, updated!.PublishedAt);
+        Assert.NotNull(updated!.PublishedAt);
     }
 
     [Fact]
@@ -92,6 +92,20 @@ public class ArticleServiceTests
     }
 
     [Fact]
+    public async Task UpdateAsync_WhenUnpublishing_ClearsPublishedAt()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        var pub = await sut.CreateAsync(new CreateArticleDto { Title = "T", Slug = "t", Content = "<p>t</p>", IsPublished = true });
+        Assert.NotNull(pub.PublishedAt);
+
+        var updated = await sut.UpdateAsync(pub.Id, new UpdateArticleDto { Title = "T", Content = "<p>t</p>", IsPublished = false });
+
+        Assert.NotNull(updated);
+        Assert.Null(updated!.PublishedAt);
+    }
+
+    [Fact]
     public async Task DeleteAsync_RemovesArticle_AndReturnsFalseWhenMissing()
     {
         using var db = NewDb();
@@ -101,5 +115,67 @@ public class ArticleServiceTests
         Assert.True(await sut.DeleteAsync(a.Id));
         Assert.Null(await sut.GetBySlugAsync("t"));
         Assert.False(await sut.DeleteAsync(9999));
+    }
+
+    [Fact]
+    public async Task CreateAsync_DuplicateSlug_Throws()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        await sut.CreateAsync(new CreateArticleDto { Title = "A", Slug = "dup", Content = "<p>a</p>" });
+
+        await Assert.ThrowsAsync<Core.Exceptions.DuplicateSlugException>(() =>
+            sut.CreateAsync(new CreateArticleDto { Title = "B", Slug = "dup", Content = "<p>b</p>" }));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SlugCollidesWithOtherArticle_Throws()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        await sut.CreateAsync(new CreateArticleDto { Title = "A", Slug = "taken", Content = "<p>a</p>" });
+        var b = await sut.CreateAsync(new CreateArticleDto { Title = "B", Slug = "free", Content = "<p>b</p>" });
+
+        await Assert.ThrowsAsync<Core.Exceptions.DuplicateSlugException>(() =>
+            sut.UpdateAsync(b.Id, new UpdateArticleDto { Title = "B", Slug = "taken", Content = "<p>b</p>" }));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_KeepingOwnSlug_DoesNotThrow()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        var a = await sut.CreateAsync(new CreateArticleDto { Title = "A", Slug = "mine", Content = "<p>a</p>" });
+
+        var updated = await sut.UpdateAsync(a.Id, new UpdateArticleDto { Title = "A2", Slug = "mine", Content = "<p>a2</p>" });
+
+        Assert.NotNull(updated);
+        Assert.Equal("mine", updated!.Slug);
+    }
+
+    [Fact]
+    public async Task GetAllForAdminAsync_IncludesDrafts()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        await sut.CreateAsync(new CreateArticleDto { Title = "P", Slug = "p", Content = "<p>p</p>", IsPublished = true });
+        await sut.CreateAsync(new CreateArticleDto { Title = "D", Slug = "d", Content = "<p>d</p>", IsPublished = false });
+
+        var result = await sut.GetAllForAdminAsync(1, 10);
+
+        Assert.Equal(2, result.Total);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsDraft()
+    {
+        using var db = NewDb();
+        var sut = NewSut(db);
+        var d = await sut.CreateAsync(new CreateArticleDto { Title = "D", Slug = "d", Content = "<p>d</p>", IsPublished = false });
+
+        var found = await sut.GetByIdAsync(d.Id);
+
+        Assert.NotNull(found);
+        Assert.Equal("d", found!.Slug);
     }
 }

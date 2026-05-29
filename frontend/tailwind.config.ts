@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import typography from '@tailwindcss/typography'
 
 export default <Partial<Config>>{
   content: [],
@@ -13,4 +14,5 @@ export default <Partial<Config>>{
       borderRadius: { card: '0.75rem' },
     },
   },
+  plugins: [typography],
 }

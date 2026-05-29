@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Callback> Callbacks => Set<Callback>();
     public DbSet<Contact> Contacts => Set<Contact>();
     public DbSet<ArticleMedia> ArticleMedia => Set<ArticleMedia>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,6 +57,14 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Phone).IsRequired();
             entity.Property(e => e.Message).IsRequired();
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Username).IsUnique();
+            entity.Property(e => e.Username).IsRequired();
+            entity.Property(e => e.PasswordHash).IsRequired();
         });
     }
 }

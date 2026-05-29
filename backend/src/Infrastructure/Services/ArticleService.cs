@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Core.DTOs;
 using Core.Entities;
+using Core.Exceptions;
 using Core.Interfaces;
 using Infrastructure.Data;
 
@@ -36,6 +37,25 @@ public class ArticleService : IArticleService
         return new PagedResult<ArticleListItemDto>(items, total, page, pageSize);
     }
 
+    public async Task<PagedResult<ArticleListItemDto>> GetAllForAdminAsync(int page, int pageSize)
+    {
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > 100) pageSize = 12;
+
+        var query = _db.Articles;
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(a => a.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(a => new ArticleListItemDto(
+                a.Id, a.Title, a.Slug, a.Summary, a.ThumbnailPath, a.PublishedAt))
+            .ToListAsync();
+
+        return new PagedResult<ArticleListItemDto>(items, total, page, pageSize);
+    }
+
     public async Task<ArticleDto?> GetBySlugAsync(string slug)
     {
         var article = await _db.Articles
@@ -45,8 +65,17 @@ public class ArticleService : IArticleService
         return article is null ? null : ToDto(article);
     }
 
+    public async Task<ArticleDto?> GetByIdAsync(int id)
+    {
+        var article = await _db.Articles.Include(a => a.Media).FirstOrDefaultAsync(a => a.Id == id);
+        return article is null ? null : ToDto(article);
+    }
+
     public async Task<ArticleDto> CreateAsync(CreateArticleDto dto)
     {
+        if (await _db.Articles.AnyAsync(a => a.Slug == dto.Slug))
+            throw new DuplicateSlugException(dto.Slug);
+
         var article = new Article
         {
             Title = dto.Title,
@@ -55,7 +84,7 @@ public class ArticleService : IArticleService
             Content = _sanitizer.Sanitize(dto.Content),
             ThumbnailPath = dto.ThumbnailPath,
             IsPublished = dto.IsPublished,
-            PublishedAt = dto.IsPublished ? DateTime.UtcNow : default
+            PublishedAt = dto.IsPublished ? DateTime.UtcNow : null
         };
 
         _db.Articles.Add(article);
@@ -69,14 +98,20 @@ public class ArticleService : IArticleService
         var article = await _db.Articles.Include(a => a.Media).FirstOrDefaultAsync(a => a.Id == id);
         if (article is null) return null;
 
+        if (!string.IsNullOrEmpty(dto.Slug) && dto.Slug != article.Slug
+            && await _db.Articles.AnyAsync(a => a.Slug == dto.Slug && a.Id != id))
+            throw new DuplicateSlugException(dto.Slug);
+
         article.Title = dto.Title;
         if (!string.IsNullOrEmpty(dto.Slug)) article.Slug = dto.Slug;
         article.Summary = dto.Summary;
         article.Content = _sanitizer.Sanitize(dto.Content);
         article.ThumbnailPath = dto.ThumbnailPath;
         article.IsPublished = dto.IsPublished;
-        if (dto.IsPublished && article.PublishedAt == default)
+        if (dto.IsPublished && article.PublishedAt is null)
             article.PublishedAt = DateTime.UtcNow;
+        else if (!dto.IsPublished)
+            article.PublishedAt = null;
 
         await _db.SaveChangesAsync();
         return ToDto(article);

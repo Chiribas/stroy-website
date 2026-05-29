@@ -60,6 +60,15 @@ public class HtmlSanitizerServiceTests
     }
 
     [Fact]
+    public void Sanitize_KeepsRelativeUploadImage()
+    {
+        // Uploaded images are stored as same-origin relative URLs (/uploads/..),
+        // served by nginx in prod. The sanitizer must preserve them.
+        var result = _sut.Sanitize("<p>x</p><img src=\"/uploads/abc.webp\" alt=\"y\">");
+        Assert.Contains("/uploads/abc.webp", result);
+    }
+
+    [Fact]
     public void Sanitize_WithNullInput_ReturnsEmpty()
     {
         var result = _sut.Sanitize(null!);

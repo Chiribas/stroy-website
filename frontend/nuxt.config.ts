@@ -6,10 +6,22 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   site: { url: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3001' },
   devServer: { port: 3001 },
+  routeRules: {
+    '/admin/**': { ssr: false },
+  },
+  sitemap: {
+    exclude: ['/admin/**'],
+  },
   nitro: {
+    // Dev only: proxy same-origin /uploads to the backend so relative image URLs
+    // (stored in article content) resolve in dev exactly as they do behind nginx in prod.
+    devProxy: {
+      '/uploads': { target: 'http://localhost:8081/uploads', changeOrigin: true },
+    },
     prerender: {
       crawlLinks: true,
       routes: ['/', '/prices', '/portfolio', '/contact'],
+      ignore: ['/admin'],
       failOnError: false,
     },
   },
