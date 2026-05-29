@@ -1,0 +1,9 @@
+bin/
+obj/
+**/bin/
+**/obj/
+*.db
+*.db-shm
+*.db-wal
+src/Api/uploads/
+src/Api/database.db

@@ -1,0 +1,29 @@
+# ---- build stage ----
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Сначала только csproj — для кеша restore
+COPY src/Api/Api.csproj src/Api/
+COPY src/Core/Core.csproj src/Core/
+COPY src/Infrastructure/Infrastructure.csproj src/Infrastructure/
+RUN dotnet restore src/Api/Api.csproj
+
+# Затем исходники и публикация
+COPY src/ src/
+RUN dotnet publish src/Api/Api.csproj -c Release -o /app/publish
+
+# ---- runtime stage ----
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+
+# curl нужен для healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Api.dll"]

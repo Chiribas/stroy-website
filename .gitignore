@@ -9,6 +9,9 @@
 *.db-wal
 backend/src/Infrastructure/Data/*.db
 
+# Bind-mount данные деплоя (БД + загруженные файлы) — не коммитим
+/data/
+
 # Uploads
 uploads/
 app/uploads/

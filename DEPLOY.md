@@ -219,3 +219,71 @@ docker compose restart nginx
 ```bash
 docker compose exec backend sqlite3 /app/data/database.db
 ```
+
+---
+
+## Локальный демо-деплой (этап 1, реализован)
+
+Простой запуск с локальной машины для показа (HTTP, по IP, без SSL/домена):
+
+```bash
+cp .env.example .env   # отредактировать ADMIN_PASSWORD, JWT_SECRET, SITE_URL
+docker compose up -d --build
+# сайт: http://localhost/  (или http://<IP>/)
+```
+
+Фронт работает в режиме **SSR** (Nuxt node-сервер) — контент из админки виден на
+сайте сразу, без пересборки. (Пре-рендер публичных страниц намеренно отключён в
+`nuxt.config.ts`: иначе они запекались бы статикой на этапе сборки и не показывали
+новый контент.)
+
+**Где лежат данные (важно для переноса):**
+БД и загруженные картинки хранятся через **bind-mount** прямо в папке проекта:
+- `./data/database.db` — база (SQLite)
+- `./uploads/` — загруженные изображения (`.webp`)
+
+Эти папки в `.gitignore` (в гит не коммитятся), но **переезжают вместе с папкой проекта**.
+
+**Перенести на другую машину «как есть» (со всеми статьями и картинками):**
+```bash
+# 1. Скопировать ВСЮ папку stroy-website (включая ./data и ./uploads) на целевую машину
+#    (например: rsync -av stroy-website/ user@host:/opt/stroy-website/)
+# 2. На целевой машине:
+docker compose up -d --build
+```
+Данные уже внутри папки — ничего отдельно переносить не надо.
+
+**Обновить после правок кода (данные не теряются):**
+```bash
+docker compose up -d --build
+```
+
+**Логи / статус:**
+```bash
+docker compose logs -f
+docker compose ps
+```
+
+**Сбросить данные (чистый старт демо):**
+```bash
+docker compose down
+rm -rf ./data/* ./uploads/*     # bind-mount: данные удаляются вручную
+docker compose up -d            # БД пересоздастся, админ пересеется из .env
+```
+
+## На будущее (этап 2 — хостинг)
+
+Заготовки для боевого деплоя, когда дойдут руки:
+
+1. **Container registry** — собирать образы в CI и пушить (GHCR/Docker Hub),
+   на сервере `docker compose pull` вместо `--build`. Добавить `image:` в compose.
+2. **GitHub Actions автосборка** — workflow `.github/workflows/deploy.yml`:
+   билд образов → push в registry → SSH на сервер → `docker compose pull && up -d`.
+   Секреты: `SSH_PRIVATE_KEY`, `SSH_HOST`, `SSH_USER`, креды registry.
+3. **SSL / домен** — добавить сервис certbot или внешний reverse-proxy (Caddy/Traefik),
+   nginx-локейшн на 443, редирект 80→443. Поправить `SITE_URL` на `https://<домен>`.
+4. **Бэкап** — `scripts/backup.sh` (dump SQLite + tar uploads) по cron (см. примеры выше).
+5. **SSG-вариант фронта** — если публичные страницы захочется статикой (быстрее,
+   дешевле хостинг): `nuxt generate` вместо SSR, nginx раздаёт `.output/public`,
+   пересборка фронта при изменении контента. Сборка потребует доступности бэка
+   во время билда (пре-рендер фетчит данные).

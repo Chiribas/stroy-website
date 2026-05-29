@@ -18,12 +18,10 @@ export default defineNuxtConfig({
     devProxy: {
       '/uploads': { target: 'http://localhost:8081/uploads', changeOrigin: true },
     },
-    prerender: {
-      crawlLinks: true,
-      routes: ['/', '/prices', '/portfolio', '/contact'],
-      ignore: ['/admin'],
-      failOnError: false,
-    },
+    // НЕ пре-рендерим публичные страницы: работаем в режиме живого SSR (node-сервер),
+    // чтобы контент из админки появлялся сразу, без пересборки образа.
+    // (Раньше здесь был prerender.routes — он запекал статику на этапе build,
+    //  из-за чего /portfolio показывал пустой снимок времён сборки.)
   },
   runtimeConfig: {
     public: {
