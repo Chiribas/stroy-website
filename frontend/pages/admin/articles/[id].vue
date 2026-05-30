@@ -18,13 +18,20 @@ onMounted(async () => {
   })
 })
 
+function describeError(e: any): string {
+  if (e?.statusCode === 409) return 'Статья с таким slug уже существует'
+  const errs = e?.data?.errors
+  if (errs) return Object.values(errs).flat().join('; ')
+  return e?.data?.title || 'Ошибка сохранения'
+}
+
 async function save() {
   error.value = ''
   try {
     await api.updateArticle(id, { ...form })
     await navigateTo('/admin/articles')
   } catch (e: any) {
-    error.value = e?.statusCode === 409 ? 'Статья с таким slug уже существует' : 'Ошибка сохранения'
+    error.value = describeError(e)
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ArticleWrite } from '~/types/admin'
+import { slugify } from '~/lib/slug'
 definePageMeta({ layout: 'admin', middleware: 'auth' })
 const api = useAdminApi()
 const mediaUrl = useMediaUrl()
@@ -8,13 +9,24 @@ const form = reactive<ArticleWrite>({
   title: '', slug: '', summary: '', content: '', thumbnailPath: '', isPublished: false, tags: '',
 })
 
+// Авто-генерация slug из заголовка, пока юзер не правил slug руками.
+const slugEdited = ref(false)
+watch(() => form.title, (t) => { if (!slugEdited.value) form.slug = slugify(t) })
+
+function describeError(e: any): string {
+  if (e?.statusCode === 409) return 'Статья с таким slug уже существует'
+  const errs = e?.data?.errors
+  if (errs) return Object.values(errs).flat().join('; ')
+  return e?.data?.title || 'Ошибка сохранения'
+}
+
 async function save() {
   error.value = ''
   try {
     const created = await api.createArticle({ ...form })
     await navigateTo(`/admin/articles/${created.id}`)
   } catch (e: any) {
-    error.value = e?.statusCode === 409 ? 'Статья с таким slug уже существует' : 'Ошибка сохранения'
+    error.value = describeError(e)
   }
 }
 </script>
@@ -28,8 +40,8 @@ async function save() {
         <input v-model="form.title" placeholder="напр. Замена фундамента на сваи" class="w-full border rounded px-3 py-2" />
       </label>
       <label class="block">
-        <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес статьи)</span>
-        <input v-model="form.slug" placeholder="zamena-fundamenta-svai" class="w-full border rounded px-3 py-2" />
+        <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес статьи — генерится из заголовка, только латиница)</span>
+        <input v-model="form.slug" @input="slugEdited = true" placeholder="zamena-fundamenta-svai" class="w-full border rounded px-3 py-2" />
       </label>
       <label class="block">
         <span class="mb-1 block text-sm font-medium text-ink">Краткое описание (анонс в ленте)</span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AdminService, ServiceWrite } from '~/types/admin'
+import { slugify } from '~/lib/slug'
 definePageMeta({ layout: 'admin', middleware: 'auth' })
 const api = useAdminApi()
 const items = ref<AdminService[]>([])
@@ -8,17 +9,29 @@ const blank = (): ServiceWrite => ({ title: '', slug: '', shortDescription: '', 
 const draft = reactive<ServiceWrite>(blank())
 const error = ref('')
 
+// Авто-slug из названия (только при создании, пока slug не правили руками).
+const slugEdited = ref(false)
+watch(() => draft.title, (t) => { if (!editingId.value && !slugEdited.value) draft.slug = slugify(t) })
+
 async function load() { items.value = await api.listServices() }
 onMounted(load)
 
 function edit(s: AdminService) {
   editingId.value = s.id
+  slugEdited.value = true            // у существующей услуги slug не трогаем
   Object.assign(draft, {
     title: s.title, slug: s.slug, shortDescription: s.shortDescription ?? '', iconName: s.iconName ?? '',
     content: s.content, tag: s.tag ?? '', sortOrder: s.sortOrder, isPublished: s.isPublished,
   })
 }
-function reset() { editingId.value = null; error.value = ''; Object.assign(draft, blank()) }
+function reset() { editingId.value = null; error.value = ''; slugEdited.value = false; Object.assign(draft, blank()) }
+
+function describeError(e: any): string {
+  if (e?.statusCode === 409) return 'Услуга с таким slug уже существует'
+  const errs = e?.data?.errors
+  if (errs) return Object.values(errs).flat().join('; ')
+  return e?.data?.title || 'Ошибка сохранения'
+}
 
 async function save() {
   error.value = ''
@@ -27,7 +40,7 @@ async function save() {
     else await api.createService({ ...draft })
     reset(); await load()
   } catch (e: any) {
-    error.value = e?.statusCode === 409 ? 'Услуга с таким slug уже существует' : 'Ошибка сохранения'
+    error.value = describeError(e)
   }
 }
 async function remove(id: number) {
@@ -61,8 +74,8 @@ async function remove(id: number) {
           <input v-model="draft.title" placeholder="напр. Замена фундамента" class="border rounded px-2 py-1 w-full" />
         </label>
         <label class="block">
-          <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес страницы)</span>
-          <input v-model="draft.slug" placeholder="zamena-fundamenta" class="border rounded px-2 py-1 w-full" />
+          <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес — из названия, латиница)</span>
+          <input v-model="draft.slug" @input="slugEdited = true" placeholder="zamena-fundamenta" class="border rounded px-2 py-1 w-full" />
         </label>
         <label class="block">
           <span class="mb-1 block text-sm font-medium text-ink">Иконка</span>
