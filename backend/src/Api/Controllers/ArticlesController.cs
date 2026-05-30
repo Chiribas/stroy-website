@@ -13,8 +13,8 @@ public class ArticlesController : ControllerBase
     public ArticlesController(IArticleService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<ArticleListItemDto>>> Get(int page = 1, int pageSize = 12)
-        => Ok(await _service.GetPublishedAsync(page, pageSize));
+    public async Task<ActionResult<PagedResult<ArticleListItemDto>>> Get(int page = 1, int pageSize = 12, string? tag = null)
+        => Ok(await _service.GetPublishedAsync(page, pageSize, tag));
 
     [HttpGet("{slug}")]
     public async Task<ActionResult<ArticleDto>> GetBySlug(string slug)

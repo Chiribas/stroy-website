@@ -8,7 +8,8 @@ function logout() {
 const nav = [
   { to: '/admin', label: 'Дашборд' },
   { to: '/admin/articles', label: 'Статьи' },
-  { to: '/admin/prices', label: 'Цены' },
+  { to: '/admin/services', label: 'Услуги' },
+  { to: '/admin/prices', label: 'Примеры и цены' },
   { to: '/admin/inbox', label: 'Заявки' },
 ]
 </script>
@@ -22,7 +23,8 @@ const nav = [
       </NuxtLink>
       <button class="mt-6 text-sm text-gray-400 hover:text-white" @click="logout">Выйти</button>
     </aside>
-    <main class="flex-1 p-6 bg-gray-50">
+    <main class="flex-1 bg-surface p-6 text-ink">
+      <div class="mb-4 flex justify-end"><ThemeToggle /></div>
       <slot />
     </main>
   </div>

@@ -17,4 +17,5 @@ public class UpdateArticleDto
 
     public string? ThumbnailPath { get; set; }
     public bool IsPublished { get; set; }
+    public string? Tags { get; set; }
 }

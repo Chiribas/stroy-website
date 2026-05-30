@@ -9,6 +9,7 @@ export interface AdminArticle {
   content: string
   thumbnailPath?: string | null
   publishedAt?: string | null
+  tags?: string | null
   media: { id: number; path: string; mediaType: string; alt?: string | null; sortOrder: number }[]
 }
 
@@ -19,17 +20,32 @@ export interface ArticleWrite {
   content: string
   thumbnailPath?: string | null
   isPublished: boolean
+  tags?: string | null
 }
 
+// Пример работы с ценой (бывш. "прайс").
 export interface ServicePriceWrite {
-  category: string
-  name: string
+  title: string
+  photoPath?: string | null
   description?: string | null
-  priceFrom: number
-  priceTo?: number | null
-  unit?: string | null
+  price: number
+  duration?: string | null
+  articleSlug?: string | null
+  tag?: string | null
   sortOrder: number
 }
+
+export interface ServiceWrite {
+  title: string
+  slug: string
+  shortDescription?: string | null
+  iconName?: string | null
+  content: string
+  tag?: string | null
+  sortOrder: number
+  isPublished: boolean
+}
+export interface AdminService extends ServiceWrite { id: number }
 
 export interface Callback {
   id: number; phone: string; name?: string | null; createdAt: string; isProcessed: boolean

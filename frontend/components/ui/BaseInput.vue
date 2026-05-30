@@ -26,15 +26,15 @@ const value = computed({
       v-if="textarea"
       v-model="value"
       rows="4"
-      class="w-full rounded-card border px-3 py-2 outline-none focus:border-brand"
-      :class="error ? 'border-red-500' : 'border-gray-300'"
+      class="w-full rounded-card border bg-surface-2 px-3 py-2 text-ink outline-none focus:border-brand"
+      :class="error ? 'border-red-500' : 'border-base'"
     />
     <input
       v-else
       v-model="value"
       :type="type ?? 'text'"
-      class="w-full rounded-card border px-3 py-2 outline-none focus:border-brand"
-      :class="error ? 'border-red-500' : 'border-gray-300'"
+      class="w-full rounded-card border bg-surface-2 px-3 py-2 text-ink outline-none focus:border-brand"
+      :class="error ? 'border-red-500' : 'border-base'"
     />
     <span v-if="error" class="mt-1 block text-sm text-red-600">{{ error }}</span>
   </label>

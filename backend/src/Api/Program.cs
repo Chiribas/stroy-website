@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<Core.Interfaces.IHtmlSanitizerService, Infrastructure.Services.HtmlSanitizerService>();
 builder.Services.AddScoped<Core.Interfaces.IArticleService, Infrastructure.Services.ArticleService>();
 builder.Services.AddScoped<Core.Interfaces.IServicePriceService, Infrastructure.Services.ServicePriceService>();
+builder.Services.AddScoped<Core.Interfaces.IServiceCatalogService, Infrastructure.Services.ServiceCatalogService>();
 builder.Services.AddScoped<Core.Interfaces.ICallbackService, Infrastructure.Services.CallbackService>();
 builder.Services.AddScoped<Core.Interfaces.IContactService, Infrastructure.Services.ContactService>();
 builder.Services.AddScoped<Core.Interfaces.IAuthService, Infrastructure.Services.AuthService>();
@@ -58,6 +59,7 @@ using (var scope = app.Services.CreateScope())
         db.Database.Migrate();
     var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("AdminSeeder");
     await AdminSeeder.SeedAsync(db, app.Configuration, logger);
+    await ContentSeeder.SeedAsync(db);
 }
 
 if (app.Environment.IsDevelopment())

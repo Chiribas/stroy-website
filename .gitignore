@@ -58,3 +58,7 @@ Thumbs.db
 # Temporary
 *.tmp
 *.temp
+
+# Tooling artifacts (brainstorm mockups, playwright MCP output)
+.superpowers/
+.playwright-mcp/

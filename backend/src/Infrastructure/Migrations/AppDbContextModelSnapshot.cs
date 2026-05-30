@@ -43,6 +43,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Summary")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Tags")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ThumbnailPath")
                         .HasColumnType("TEXT");
 
@@ -141,33 +144,76 @@ namespace Infrastructure.Migrations
                     b.ToTable("Contacts");
                 });
 
+            modelBuilder.Entity("Core.Entities.Service", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IconName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Services");
+                });
+
             modelBuilder.Entity("Core.Entities.ServicePrice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
+                    b.Property<string>("ArticleSlug")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("Duration")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PriceFrom")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int?>("PriceTo")
+                    b.Property<int>("Price")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Unit")
+                    b.Property<string>("Tag")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

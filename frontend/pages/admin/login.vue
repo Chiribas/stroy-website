@@ -23,7 +23,7 @@ async function submit() {
 </script>
 
 <template>
-  <div class="max-w-sm mx-auto mt-24 bg-white p-6 rounded shadow">
+  <div class="max-w-sm mx-auto mt-24 bg-surface-2 p-6 rounded shadow">
     <h1 class="text-xl font-bold mb-4">Вход в админку</h1>
     <form class="space-y-3" @submit.prevent="submit">
       <input v-model="username" placeholder="Логин" class="w-full border rounded px-3 py-2" />

@@ -16,9 +16,9 @@ public class ServicePriceService : IServicePriceService
     {
         return await _db.ServicePrices
             .OrderBy(p => p.SortOrder)
-            .ThenBy(p => p.PriceFrom)
+            .ThenBy(p => p.Price)
             .Select(p => new ServicePriceDto(
-                p.Id, p.Category, p.Name, p.Description, p.PriceFrom, p.PriceTo, p.Unit, p.SortOrder))
+                p.Id, p.Title, p.PhotoPath, p.Description, p.Price, p.Duration, p.ArticleSlug, p.Tag, p.SortOrder))
             .ToListAsync();
     }
 
@@ -26,8 +26,9 @@ public class ServicePriceService : IServicePriceService
     {
         var entity = new ServicePrice
         {
-            Category = dto.Category, Name = dto.Name, Description = dto.Description,
-            PriceFrom = dto.PriceFrom, PriceTo = dto.PriceTo, Unit = dto.Unit, SortOrder = dto.SortOrder,
+            Title = dto.Title, PhotoPath = dto.PhotoPath, Description = dto.Description,
+            Price = dto.Price, Duration = dto.Duration, ArticleSlug = dto.ArticleSlug,
+            Tag = dto.Tag, SortOrder = dto.SortOrder,
         };
         _db.ServicePrices.Add(entity);
         await _db.SaveChangesAsync();
@@ -38,8 +39,9 @@ public class ServicePriceService : IServicePriceService
     {
         var entity = await _db.ServicePrices.FindAsync(id);
         if (entity is null) return null;
-        entity.Category = dto.Category; entity.Name = dto.Name; entity.Description = dto.Description;
-        entity.PriceFrom = dto.PriceFrom; entity.PriceTo = dto.PriceTo; entity.Unit = dto.Unit; entity.SortOrder = dto.SortOrder;
+        entity.Title = dto.Title; entity.PhotoPath = dto.PhotoPath; entity.Description = dto.Description;
+        entity.Price = dto.Price; entity.Duration = dto.Duration; entity.ArticleSlug = dto.ArticleSlug;
+        entity.Tag = dto.Tag; entity.SortOrder = dto.SortOrder;
         await _db.SaveChangesAsync();
         return ToDto(entity);
     }
@@ -54,5 +56,5 @@ public class ServicePriceService : IServicePriceService
     }
 
     private static ServicePriceDto ToDto(ServicePrice p) => new(
-        p.Id, p.Category, p.Name, p.Description, p.PriceFrom, p.PriceTo, p.Unit, p.SortOrder);
+        p.Id, p.Title, p.PhotoPath, p.Description, p.Price, p.Duration, p.ArticleSlug, p.Tag, p.SortOrder);
 }

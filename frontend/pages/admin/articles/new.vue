@@ -5,7 +5,7 @@ const api = useAdminApi()
 const mediaUrl = useMediaUrl()
 const error = ref('')
 const form = reactive<ArticleWrite>({
-  title: '', slug: '', summary: '', content: '', thumbnailPath: '', isPublished: false,
+  title: '', slug: '', summary: '', content: '', thumbnailPath: '', isPublished: false, tags: '',
 })
 
 async function save() {
@@ -26,11 +26,12 @@ async function save() {
       <input v-model="form.title" placeholder="Заголовок" class="w-full border rounded px-3 py-2" />
       <input v-model="form.slug" placeholder="slug-stati" class="w-full border rounded px-3 py-2" />
       <textarea v-model="form.summary" placeholder="Краткое описание" class="w-full border rounded px-3 py-2" />
+      <input v-model="form.tags" placeholder="Теги через запятую (напр. foundation,remont)" class="w-full border rounded px-3 py-2" />
       <div>
-        <div class="text-sm text-gray-600 mb-1">Главная картинка (превью в портфолио)</div>
+        <div class="text-sm text-muted mb-1">Главная картинка (превью в портфолио)</div>
         <div class="flex items-center gap-3">
           <img v-if="form.thumbnailPath" :src="mediaUrl(form.thumbnailPath)" class="h-20 w-32 rounded border object-cover" />
-          <div v-else class="h-20 w-32 rounded border bg-gray-100 flex items-center justify-center text-xs text-gray-400">нет фото</div>
+          <div v-else class="h-20 w-32 rounded border border-base bg-surface flex items-center justify-center text-xs text-muted">нет фото</div>
           <MediaUploader label="Загрузить превью" @uploaded="(m) => form.thumbnailPath = m.thumbnailUrl" />
           <button v-if="form.thumbnailPath" type="button" class="text-red-600 text-sm" @click="form.thumbnailPath = ''">Убрать</button>
         </div>

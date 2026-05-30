@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Article> Articles => Set<Article>();
+    public DbSet<Service> Services => Set<Service>();
     public DbSet<ServicePrice> ServicePrices => Set<ServicePrice>();
     public DbSet<Callback> Callbacks => Set<Callback>();
     public DbSet<Contact> Contacts => Set<Contact>();
@@ -19,6 +20,15 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Article>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Slug).IsUnique();
+            entity.Property(e => e.Title).IsRequired();
+            entity.Property(e => e.Slug).IsRequired();
+            entity.Property(e => e.Content).IsRequired();
+        });
+
+        modelBuilder.Entity<Service>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Slug).IsUnique();
@@ -41,8 +51,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ServicePrice>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Category).IsRequired();
-            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Title).IsRequired();
         });
 
         modelBuilder.Entity<Callback>(entity =>

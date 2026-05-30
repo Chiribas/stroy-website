@@ -6,5 +6,6 @@ public record ArticleListItemDto(
     string Slug,
     string? Summary,
     string? ThumbnailPath,
-    DateTime? PublishedAt
+    DateTime? PublishedAt,
+    string? Tags
 );

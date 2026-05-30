@@ -178,4 +178,18 @@ public class ArticleServiceTests
         Assert.NotNull(found);
         Assert.Equal("d", found!.Slug);
     }
+
+    [Fact]
+    public async Task GetPublishedAsync_FiltersByTag()
+    {
+        using var db = NewDb();
+        var svc = NewSut(db);
+        await svc.CreateAsync(new CreateArticleDto { Title = "A", Slug = "a", Content = "x", IsPublished = true, Tags = "foundation,piles" });
+        await svc.CreateAsync(new CreateArticleDto { Title = "B", Slug = "b", Content = "x", IsPublished = true, Tags = "roofing" });
+
+        var found = await svc.GetPublishedAsync(1, 12, "foundation");
+
+        Assert.Single(found.Items);
+        Assert.Equal("a", found.Items[0].Slug);
+    }
 }

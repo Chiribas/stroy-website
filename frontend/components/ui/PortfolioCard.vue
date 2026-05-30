@@ -9,8 +9,8 @@ const img = computed(() =>
 </script>
 
 <template>
-  <NuxtLink :to="`/portfolio/${article.slug}`" class="group block overflow-hidden rounded-card border">
-    <div class="aspect-video bg-gray-100">
+  <NuxtLink :to="`/portfolio/${article.slug}`" class="group block overflow-hidden rounded-card border border-base bg-surface-2">
+    <div class="aspect-video bg-surface">
       <img v-if="img" :src="img" :alt="article.title" class="h-full w-full object-cover transition group-hover:scale-105" />
     </div>
     <div class="p-4">

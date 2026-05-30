@@ -5,6 +5,7 @@ export interface ArticleListItem {
   summary?: string | null
   thumbnailPath?: string | null
   publishedAt: string
+  tags?: string | null
 }
 
 export interface ArticleMedia {
@@ -23,6 +24,7 @@ export interface Article {
   content: string
   thumbnailPath?: string | null
   publishedAt: string
+  tags?: string | null
   media: ArticleMedia[]
 }
 
@@ -33,14 +35,37 @@ export interface PagedResult<T> {
   pageSize: number
 }
 
+export interface ServiceListItem {
+  id: number
+  title: string
+  slug: string
+  shortDescription?: string | null
+  iconName?: string | null
+  sortOrder: number
+}
+
+export interface ServiceDetail {
+  id: number
+  title: string
+  slug: string
+  shortDescription?: string | null
+  iconName?: string | null
+  content: string
+  tag?: string | null
+  sortOrder: number
+  isPublished: boolean
+}
+
+// Пример выполненной работы с ценой (бывш. "прайс").
 export interface ServicePrice {
   id: number
-  category: string
-  name: string
+  title: string
+  photoPath?: string | null
   description?: string | null
-  priceFrom: number
-  priceTo?: number | null
-  unit?: string | null
+  price: number
+  duration?: string | null
+  articleSlug?: string | null
+  tag?: string | null
   sortOrder: number
 }
 

@@ -1,6 +1,14 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
+  app: {
+    head: {
+      script: [{
+        innerHTML: `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.classList.toggle('dark',d);}catch(e){}})();`,
+        tagPosition: 'head',
+      }],
+    },
+  },
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@nuxtjs/sitemap'],
   components: [{ path: '~/components', pathPrefix: false }],
   css: ['~/assets/css/main.css'],

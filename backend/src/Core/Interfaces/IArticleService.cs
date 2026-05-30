@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface IArticleService
 {
-    Task<PagedResult<ArticleListItemDto>> GetPublishedAsync(int page, int pageSize);
+    Task<PagedResult<ArticleListItemDto>> GetPublishedAsync(int page, int pageSize, string? tag = null);
     Task<PagedResult<ArticleListItemDto>> GetAllForAdminAsync(int page, int pageSize);
     Task<ArticleDto?> GetBySlugAsync(string slug);
     Task<ArticleDto?> GetByIdAsync(int id);

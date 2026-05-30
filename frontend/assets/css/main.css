@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --surface: 248 250 252;     /* #f8fafc */
+    --surface-2: 255 255 255;   /* #ffffff */
+    --base: 226 232 240;        /* #e2e8f0 */
+    --ink: 31 41 55;            /* #1f2937 */
+    --muted: 100 116 139;       /* #64748b */
+    --brand: 217 119 6;         /* #d97706 */
+    --brand-contrast: 255 255 255;
+  }
+  .dark {
+    --surface: 15 23 42;        /* #0f172a */
+    --surface-2: 30 41 59;      /* #1e293b */
+    --base: 51 65 85;           /* #334155 */
+    --ink: 241 245 249;         /* #f1f5f9 */
+    --muted: 148 163 184;       /* #94a3b8 */
+    --brand: 245 158 11;        /* #f59e0b */
+    --brand-contrast: 15 23 42;
+  }
+  body { background-color: rgb(var(--surface)); color: rgb(var(--ink)); }
+
+  /* Tailwind preflight ставит inputs `color: inherit`, но фон у них остаётся
+     UA-белым → в тёмной теме светлый текст на белом не виден. Приводим форм-поля
+     к теме (фон surface-2, текст ink, рамка base). */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: rgb(var(--surface-2));
+    color: rgb(var(--ink));
+  }
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgb(var(--muted));
+  }
+}
+
 /* Video embeds (iframe) inserted via the editor — responsive 16:9 player. */
 .video-embed {
   width: 100%;

@@ -2,14 +2,15 @@
 const c = useContacts()
 const links = [
   { to: '/', label: 'Главная' },
-  { to: '/prices', label: 'Цены' },
-  { to: '/portfolio', label: 'Портфолио' },
+  { to: '/services', label: 'Услуги' },
+  { to: '/portfolio', label: 'Из практики' },
+  { to: '/prices', label: 'Примеры работ и цен' },
   { to: '/contact', label: 'Контакты' },
 ]
 </script>
 
 <template>
-  <header class="border-b bg-white">
+  <header class="border-b border-base bg-surface-2">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
       <NuxtLink to="/" class="text-xl font-bold text-brand">{{ c.name }}</NuxtLink>
       <nav class="hidden gap-6 md:flex">
@@ -17,7 +18,10 @@ const links = [
           {{ l.label }}
         </NuxtLink>
       </nav>
-      <a :href="`tel:${c.phone}`" class="font-medium text-brand">{{ c.phone }}</a>
+      <div class="flex items-center gap-3">
+        <a :href="`tel:${c.phone}`" class="hidden font-medium text-brand sm:inline">{{ c.phone }}</a>
+        <ThemeToggle />
+      </div>
     </div>
   </header>
 </template>

@@ -46,8 +46,8 @@ onBeforeUnmount(() => editor.value?.destroy())
 </script>
 
 <template>
-  <div class="border rounded bg-white">
-    <div v-if="editor" class="flex flex-wrap gap-2 border-b p-2 text-sm">
+  <div class="rounded border border-base bg-surface-2">
+    <div v-if="editor" class="flex flex-wrap gap-2 border-b border-base p-2 text-sm">
       <button type="button" :class="{ 'font-bold': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()">Жирный</button>
       <button type="button" :class="{ 'italic': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()">Курсив</button>
       <button type="button" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
@@ -57,6 +57,6 @@ onBeforeUnmount(() => editor.value?.destroy())
       <MediaUploader :article-id="articleId" @uploaded="onMediaUploaded" />
       <button type="button" @click="addVideo">Видео</button>
     </div>
-    <EditorContent :editor="editor" class="prose max-w-none p-3 min-h-[300px]" />
+    <EditorContent :editor="editor" class="prose dark:prose-invert max-w-none p-3 min-h-[300px]" />
   </div>
 </template>

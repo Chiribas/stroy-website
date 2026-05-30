@@ -18,12 +18,15 @@ public class ArticleService : IArticleService
         _sanitizer = sanitizer;
     }
 
-    public async Task<PagedResult<ArticleListItemDto>> GetPublishedAsync(int page, int pageSize)
+    public async Task<PagedResult<ArticleListItemDto>> GetPublishedAsync(int page, int pageSize, string? tag = null)
     {
         if (page < 1) page = 1;
         if (pageSize < 1 || pageSize > 100) pageSize = 12;
 
         var query = _db.Articles.Where(a => a.IsPublished);
+        if (!string.IsNullOrWhiteSpace(tag))
+            query = query.Where(a => a.Tags != null &&
+                ("," + a.Tags + ",").Contains("," + tag + ","));
         var total = await query.CountAsync();
 
         var items = await query
@@ -31,7 +34,7 @@ public class ArticleService : IArticleService
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(a => new ArticleListItemDto(
-                a.Id, a.Title, a.Slug, a.Summary, a.ThumbnailPath, a.PublishedAt))
+                a.Id, a.Title, a.Slug, a.Summary, a.ThumbnailPath, a.PublishedAt, a.Tags))
             .ToListAsync();
 
         return new PagedResult<ArticleListItemDto>(items, total, page, pageSize);
@@ -50,7 +53,7 @@ public class ArticleService : IArticleService
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(a => new ArticleListItemDto(
-                a.Id, a.Title, a.Slug, a.Summary, a.ThumbnailPath, a.PublishedAt))
+                a.Id, a.Title, a.Slug, a.Summary, a.ThumbnailPath, a.PublishedAt, a.Tags))
             .ToListAsync();
 
         return new PagedResult<ArticleListItemDto>(items, total, page, pageSize);
@@ -84,7 +87,8 @@ public class ArticleService : IArticleService
             Content = _sanitizer.Sanitize(dto.Content),
             ThumbnailPath = dto.ThumbnailPath,
             IsPublished = dto.IsPublished,
-            PublishedAt = dto.IsPublished ? DateTime.UtcNow : null
+            PublishedAt = dto.IsPublished ? DateTime.UtcNow : null,
+            Tags = dto.Tags
         };
 
         _db.Articles.Add(article);
@@ -107,6 +111,7 @@ public class ArticleService : IArticleService
         article.Summary = dto.Summary;
         article.Content = _sanitizer.Sanitize(dto.Content);
         article.ThumbnailPath = dto.ThumbnailPath;
+        article.Tags = dto.Tags;
         article.IsPublished = dto.IsPublished;
         if (dto.IsPublished && article.PublishedAt is null)
             article.PublishedAt = DateTime.UtcNow;
@@ -127,7 +132,7 @@ public class ArticleService : IArticleService
     }
 
     private static ArticleDto ToDto(Article a) => new(
-        a.Id, a.Title, a.Slug, a.Summary, a.Content, a.ThumbnailPath, a.PublishedAt,
+        a.Id, a.Title, a.Slug, a.Summary, a.Content, a.ThumbnailPath, a.PublishedAt, a.Tags,
         a.Media.OrderBy(m => m.SortOrder)
             .Select(m => new ArticleMediaDto(m.Id, m.Path, m.MediaType, m.Alt, m.SortOrder))
             .ToList());

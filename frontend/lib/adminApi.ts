@@ -1,6 +1,6 @@
 import type {
   LoginPayload, AuthResponse, AdminArticle, ArticleWrite,
-  ServicePriceWrite, Callback, Contact, MediaUploadResponse,
+  ServicePriceWrite, ServiceWrite, AdminService, Callback, Contact, MediaUploadResponse,
 } from '~/types/admin'
 import type { ArticleListItem, PagedResult, ServicePrice } from '~/types/api'
 
@@ -34,15 +34,30 @@ export function createAdminApi(fetcher: Fetcher, baseURL: string, getToken: () =
       return fetcher<void>(url(`/api/admin/articles/${id}`), { method: 'DELETE', headers: auth() })
     },
     listPrices() {
-      return fetcher<ServicePrice[]>(url('/api/admin/services'), { headers: auth() })
+      return fetcher<ServicePrice[]>(url('/api/admin/prices'), { headers: auth() })
     },
     createPrice(body: ServicePriceWrite) {
-      return fetcher<ServicePrice>(url('/api/admin/services'), { method: 'POST', body, headers: auth() })
+      return fetcher<ServicePrice>(url('/api/admin/prices'), { method: 'POST', body, headers: auth() })
     },
     updatePrice(id: number, body: ServicePriceWrite) {
-      return fetcher<ServicePrice>(url(`/api/admin/services/${id}`), { method: 'PUT', body, headers: auth() })
+      return fetcher<ServicePrice>(url(`/api/admin/prices/${id}`), { method: 'PUT', body, headers: auth() })
     },
     deletePrice(id: number) {
+      return fetcher<void>(url(`/api/admin/prices/${id}`), { method: 'DELETE', headers: auth() })
+    },
+    listServices() {
+      return fetcher<AdminService[]>(url('/api/admin/services'), { headers: auth() })
+    },
+    getService(id: number) {
+      return fetcher<AdminService>(url(`/api/admin/services/${id}`), { headers: auth() })
+    },
+    createService(body: ServiceWrite) {
+      return fetcher<AdminService>(url('/api/admin/services'), { method: 'POST', body, headers: auth() })
+    },
+    updateService(id: number, body: ServiceWrite) {
+      return fetcher<AdminService>(url(`/api/admin/services/${id}`), { method: 'PUT', body, headers: auth() })
+    },
+    deleteService(id: number) {
       return fetcher<void>(url(`/api/admin/services/${id}`), { method: 'DELETE', headers: auth() })
     },
     listCallbacks() {

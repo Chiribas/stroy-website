@@ -20,10 +20,10 @@ async function remove(id: number) {
       <h1 class="text-2xl font-bold">Статьи</h1>
       <NuxtLink to="/admin/articles/new" class="bg-gray-900 text-white px-4 py-2 rounded">Новая статья</NuxtLink>
     </div>
-    <table class="w-full bg-white rounded shadow">
-      <thead><tr class="text-left border-b"><th class="p-3">Заголовок</th><th class="p-3">Статус</th><th class="p-3"></th></tr></thead>
+    <table class="w-full bg-surface-2 rounded shadow">
+      <thead><tr class="text-left border-b border-base"><th class="p-3">Заголовок</th><th class="p-3">Статус</th><th class="p-3"></th></tr></thead>
       <tbody>
-        <tr v-for="a in data?.items ?? []" :key="a.id" class="border-b">
+        <tr v-for="a in data?.items ?? []" :key="a.id" class="border-b border-base">
           <td class="p-3">{{ a.title }}</td>
           <td class="p-3">
             <span :class="a.publishedAt ? 'text-green-600' : 'text-gray-400'">

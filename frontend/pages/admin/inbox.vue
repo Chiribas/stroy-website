@@ -24,7 +24,7 @@ async function toggleContact(c: Contact) {
   <div class="max-w-4xl space-y-8">
     <section>
       <h1 class="text-2xl font-bold mb-4">Звонки</h1>
-      <div v-for="c in callbacks" :key="c.id" class="bg-white p-3 rounded shadow mb-2 flex justify-between"
+      <div v-for="c in callbacks" :key="c.id" class="bg-surface-2 p-3 rounded shadow mb-2 flex justify-between"
            :class="{ 'opacity-50': c.isProcessed }">
         <div>{{ c.phone }} <span v-if="c.name" class="text-gray-500">— {{ c.name }}</span></div>
         <button class="text-blue-600" @click="toggleCallback(c)">{{ c.isProcessed ? 'Вернуть' : 'Обработано' }}</button>
@@ -32,13 +32,13 @@ async function toggleContact(c: Contact) {
     </section>
     <section>
       <h2 class="text-2xl font-bold mb-4">Сообщения</h2>
-      <div v-for="c in contacts" :key="c.id" class="bg-white p-3 rounded shadow mb-2"
+      <div v-for="c in contacts" :key="c.id" class="bg-surface-2 p-3 rounded shadow mb-2"
            :class="{ 'opacity-50': c.isProcessed }">
         <div class="flex justify-between">
           <div class="font-medium">{{ c.name }} — {{ c.phone }}</div>
           <button class="text-blue-600" @click="toggleContact(c)">{{ c.isProcessed ? 'Вернуть' : 'Обработано' }}</button>
         </div>
-        <p class="text-gray-700 mt-1">{{ c.message }}</p>
+        <p class="text-muted mt-1">{{ c.message }}</p>
       </div>
     </section>
   </div>

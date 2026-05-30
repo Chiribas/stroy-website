@@ -9,7 +9,6 @@ const c = useContacts()
       <p><a :href="`tel:${c.phone}`" class="text-brand">{{ c.phone }}</a></p>
       <p><a :href="`mailto:${c.email}`" class="text-brand">{{ c.email }}</a></p>
       <p>{{ c.address }}</p>
-      <p class="text-muted">{{ c.schedule }}</p>
     </div>
   </section>
 </template>

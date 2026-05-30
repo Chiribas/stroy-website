@@ -3,8 +3,8 @@ const api = useApi()
 const c = useContacts()
 
 useSeoMeta({
-  title: 'Контакты',
-  description: `Свяжитесь с нами: ${c.phone}, ${c.email}`,
+  title: 'Контакты — Суровая Стройка',
+  description: `Свяжитесь с нами: ${c.phone}, ${c.email}. ${c.address}.`,
 })
 </script>
 
@@ -16,7 +16,6 @@ useSeoMeta({
         <p><a :href="`tel:${c.phone}`" class="text-lg text-brand">{{ c.phone }}</a></p>
         <p><a :href="`mailto:${c.email}`" class="text-brand">{{ c.email }}</a></p>
         <p>{{ c.address }}</p>
-        <p class="text-muted">{{ c.schedule }}</p>
       </div>
       <div>
         <h2 class="text-xl font-semibold text-ink">Написать нам</h2>

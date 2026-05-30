@@ -12,15 +12,16 @@ public class ArticlesEndpointTests : IClassFixture<ApiTestFactory>
     public ArticlesEndpointTests(ApiTestFactory factory) => _client = factory.CreateClient();
 
     [Fact]
-    public async Task GetArticles_WhenEmpty_ReturnsEmptyPagedResult()
+    public async Task GetArticles_ReturnsOkWithPagedResult()
     {
         var response = await _client.GetAsync("/api/articles");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var paged = await response.Content.ReadFromJsonAsync<PagedResult<ArticleListItemDto>>();
         Assert.NotNull(paged);
-        Assert.Equal(0, paged!.Total);
-        Assert.Empty(paged.Items);
+        // ContentSeeder seeds at least 1 published article
+        Assert.True(paged!.Total >= 1);
+        Assert.NotEmpty(paged.Items);
     }
 
     [Fact]

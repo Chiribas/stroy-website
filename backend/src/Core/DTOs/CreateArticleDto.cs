@@ -18,4 +18,5 @@ public class CreateArticleDto
 
     public string? ThumbnailPath { get; set; }
     public bool IsPublished { get; set; } = false;
+    public string? Tags { get; set; }
 }

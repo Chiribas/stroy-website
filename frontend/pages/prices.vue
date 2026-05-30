@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { groupByCategory } from '~/lib/prices'
 const api = useApi()
 const { data } = await useAsyncData('prices', () => api.getPrices())
-const groups = computed(() => groupByCategory(data.value ?? []))
 
 useSeoMeta({
-  title: 'Цены на строительные работы',
-  description: 'Актуальные цены на строительство, фасадные работы и ремонт.',
+  title: 'Примеры работ и цен — Суровая Стройка',
+  description: 'Реальные примеры выполненных работ с ценами и сроками.',
 })
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl px-4 py-12">
-    <h1 class="text-3xl font-bold text-ink">Цены</h1>
-    <PriceTable v-if="groups.length" :groups="groups" class="mt-8" />
-    <p v-else class="mt-8 text-muted">Прайс уточняется. Свяжитесь с нами для расчёта.</p>
+  <div class="mx-auto max-w-5xl px-4 py-12">
+    <h1 class="text-3xl font-bold text-ink">Примеры работ и цен</h1>
+    <p class="mt-3 text-muted">Точную цену назовём после обсуждения задачи. Ниже — реальные примеры.</p>
+    <div v-if="data && data.length" class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <PriceExampleCard v-for="p in data" :key="p.id" :item="p" />
+    </div>
+    <p v-else class="mt-8 text-muted">Примеры скоро появятся. Свяжитесь с нами для расчёта.</p>
   </div>
 </template>

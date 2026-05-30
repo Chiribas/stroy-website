@@ -10,5 +10,6 @@ public record ArticleDto(
     string Content,
     string? ThumbnailPath,
     DateTime? PublishedAt,
+    string? Tags,
     IReadOnlyList<ArticleMediaDto> Media
 );
