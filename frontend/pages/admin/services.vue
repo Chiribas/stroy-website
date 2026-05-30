@@ -56,15 +56,36 @@ async function remove(id: number) {
     <div class="bg-surface-2 p-4 rounded shadow space-y-3">
       <h2 class="font-semibold">{{ editingId ? 'Редактировать' : 'Добавить' }} услугу</h2>
       <div class="grid grid-cols-2 gap-3">
-        <input v-model="draft.title" placeholder="Название" class="border rounded px-2 py-1" />
-        <input v-model="draft.slug" placeholder="slug (a-z0-9-)" class="border rounded px-2 py-1" />
-        <input v-model="draft.iconName" placeholder="иконка (home/hammer/layers/move/key/truck)" class="border rounded px-2 py-1" />
-        <input v-model="draft.tag" placeholder="тег для статей" class="border rounded px-2 py-1" />
-        <input v-model.number="draft.sortOrder" type="number" placeholder="Порядок" class="border rounded px-2 py-1" />
-        <label class="flex items-center gap-2"><input v-model="draft.isPublished" type="checkbox" /> Опубликовано</label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Название</span>
+          <input v-model="draft.title" placeholder="напр. Замена фундамента" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес страницы)</span>
+          <input v-model="draft.slug" placeholder="zamena-fundamenta" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Иконка</span>
+          <input v-model="draft.iconName" placeholder="home / hammer / layers / move / key / truck" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Тег (подбор статей «Из практики»)</span>
+          <input v-model="draft.tag" placeholder="foundation" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Порядок</span>
+          <input v-model.number="draft.sortOrder" type="number" placeholder="0" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="flex items-center gap-2 pt-6"><input v-model="draft.isPublished" type="checkbox" /> Опубликовано</label>
       </div>
-      <input v-model="draft.shortDescription" placeholder="Короткое описание" class="border rounded px-2 py-1 w-full" />
-      <ArticleEditor v-model="draft.content" />
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Короткое описание (для карточки)</span>
+        <input v-model="draft.shortDescription" placeholder="напр. Подведём новый надёжный фундамент под постройку" class="border rounded px-2 py-1 w-full" />
+      </label>
+      <div>
+        <span class="mb-1 block text-sm font-medium text-ink">Подробное описание (текст детальной страницы)</span>
+        <ArticleEditor v-model="draft.content" />
+      </div>
       <p v-if="error" class="text-red-600">{{ error }}</p>
       <div class="flex gap-3">
         <button class="bg-gray-900 text-white py-2 px-4 rounded" @click="save">Сохранить</button>

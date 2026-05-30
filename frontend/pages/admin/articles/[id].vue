@@ -33,10 +33,22 @@ async function save() {
   <div class="max-w-3xl">
     <h1 class="text-2xl font-bold mb-6">Редактирование статьи</h1>
     <div class="space-y-4">
-      <input v-model="form.title" placeholder="Заголовок" class="w-full border rounded px-3 py-2" />
-      <input v-model="form.slug" placeholder="slug-stati" class="w-full border rounded px-3 py-2" />
-      <textarea v-model="form.summary" placeholder="Краткое описание" class="w-full border rounded px-3 py-2" />
-      <input v-model="form.tags" placeholder="Теги через запятую (напр. foundation,remont)" class="w-full border rounded px-3 py-2" />
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Заголовок</span>
+        <input v-model="form.title" placeholder="напр. Замена фундамента на сваи" class="w-full border rounded px-3 py-2" />
+      </label>
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Slug (адрес статьи)</span>
+        <input v-model="form.slug" placeholder="zamena-fundamenta-svai" class="w-full border rounded px-3 py-2" />
+      </label>
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Краткое описание (анонс в ленте)</span>
+        <textarea v-model="form.summary" placeholder="1–2 предложения о статье" class="w-full border rounded px-3 py-2" />
+      </label>
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Теги (через запятую — связь с услугами/ценами)</span>
+        <input v-model="form.tags" placeholder="foundation, remont" class="w-full border rounded px-3 py-2" />
+      </label>
       <div>
         <div class="text-sm text-muted mb-1">Главная картинка (превью в портфолио)</div>
         <div class="flex items-center gap-3">
@@ -46,7 +58,10 @@ async function save() {
           <button v-if="form.thumbnailPath" type="button" class="text-red-600 text-sm" @click="form.thumbnailPath = ''">Убрать</button>
         </div>
       </div>
-      <ArticleEditor v-model="form.content" :article-id="id" />
+      <div>
+        <span class="mb-1 block text-sm font-medium text-ink">Текст статьи</span>
+        <ArticleEditor v-model="form.content" :article-id="id" />
+      </div>
       <label class="flex items-center gap-2"><input v-model="form.isPublished" type="checkbox" /> Опубликовано</label>
       <p v-if="error" class="text-red-600">{{ error }}</p>
       <button class="bg-gray-900 text-white px-4 py-2 rounded" @click="save">Сохранить</button>

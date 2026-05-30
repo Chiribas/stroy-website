@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { Clock } from 'lucide-vue-next'
 import type { ServicePrice } from '~/types/api'
-import { formatPrice } from '~/lib/prices'
+import { formatPrice, formatDuration } from '~/lib/prices'
 const props = defineProps<{ item: ServicePrice }>()
 const mediaUrl = useMediaUrl()
 // Реальное фото (из /uploads) — через mediaUrl; иначе локальный плейсхолдер (фронт-статика).
@@ -17,7 +18,9 @@ const photo = computed(() => props.item.photoPath ? mediaUrl(props.item.photoPat
       <p v-if="item.description" class="mt-1 text-sm text-muted">{{ item.description }}</p>
       <div class="mt-3 flex items-center justify-between">
         <span class="font-bold text-brand">{{ formatPrice(item) }}</span>
-        <span v-if="item.duration" class="text-sm text-muted">{{ item.duration }}</span>
+        <span v-if="item.duration" class="flex items-center gap-1 text-sm text-muted" title="Срок выполнения">
+          <Clock class="h-4 w-4" />{{ formatDuration(item.duration) }}
+        </span>
       </div>
       <NuxtLink v-if="item.articleSlug" :to="`/portfolio/${item.articleSlug}`" class="mt-3 inline-block text-sm text-brand hover:underline">
         Подробнее →

@@ -23,12 +23,12 @@ useSeoMeta({
 
 <template>
   <article v-if="article" class="mx-auto max-w-3xl px-4 py-12">
-    <NuxtLink to="/portfolio" class="text-brand hover:underline">← Все проекты</NuxtLink>
+    <NuxtLink to="/portfolio" class="text-brand hover:underline">← Из практики</NuxtLink>
     <h1 class="mt-4 text-3xl font-bold text-ink">{{ article.title }}</h1>
     <p v-if="article.summary" class="mt-2 text-lg text-muted">{{ article.summary }}</p>
 
     <!-- Контент санитайзится на бэкенде (HtmlSanitizer), v-html безопасен -->
-    <div class="prose mt-8 max-w-none" v-html="article.content" />
+    <div class="prose dark:prose-invert mt-8 max-w-none" v-html="article.content" />
 
     <div v-if="sortedMedia.length" class="mt-10 grid gap-4 sm:grid-cols-2">
       <img

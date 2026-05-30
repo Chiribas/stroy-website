@@ -53,19 +53,43 @@ async function remove(id: number) {
 
     <div class="bg-surface-2 p-4 rounded shadow space-y-3">
       <h2 class="font-semibold">{{ editingId ? 'Редактировать' : 'Добавить' }} пример</h2>
-      <input v-model="draft.title" placeholder="Название работы" class="border rounded px-2 py-1 w-full" />
-      <input v-model="draft.description" placeholder="Короткое описание" class="border rounded px-2 py-1 w-full" />
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Название работы</span>
+        <input v-model="draft.title" placeholder="напр. Замена фундамента дачного дома 4×5" class="border rounded px-2 py-1 w-full" />
+      </label>
+      <label class="block">
+        <span class="mb-1 block text-sm font-medium text-ink">Короткое описание</span>
+        <input v-model="draft.description" placeholder="напр. С бетонных блоков на винтовые сваи и швеллеры" class="border rounded px-2 py-1 w-full" />
+      </label>
       <div class="grid grid-cols-3 gap-3">
-        <input v-model.number="draft.price" type="number" placeholder="Цена, ₽" class="border rounded px-2 py-1" />
-        <input v-model="draft.duration" placeholder="Срок (напр. 2 дня)" class="border rounded px-2 py-1" />
-        <input v-model.number="draft.sortOrder" type="number" placeholder="Порядок" class="border rounded px-2 py-1" />
-        <input v-model="draft.articleSlug" placeholder="slug статьи (опц.)" class="border rounded px-2 py-1" />
-        <input v-model="draft.tag" placeholder="тег (опц.)" class="border rounded px-2 py-1" />
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Цена, ₽</span>
+          <input v-model.number="draft.price" type="number" placeholder="340000" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Срок</span>
+          <input v-model="draft.duration" placeholder="напр. 2 дня или 1 неделя" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Порядок</span>
+          <input v-model.number="draft.sortOrder" type="number" placeholder="0" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Ссылка на статью (slug, опц.)</span>
+          <input v-model="draft.articleSlug" placeholder="zamena-fundamenta-svai" class="border rounded px-2 py-1 w-full" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-ink">Тег (опц.)</span>
+          <input v-model="draft.tag" placeholder="foundation" class="border rounded px-2 py-1 w-full" />
+        </label>
       </div>
-      <div class="flex items-center gap-3">
-        <img v-if="draft.photoPath" :src="mediaUrl(draft.photoPath)" alt="" class="h-16 w-16 rounded object-cover" />
-        <MediaUploader label="Загрузить фото" @uploaded="onPhoto" />
-        <button v-if="draft.photoPath" type="button" class="text-sm text-red-600" @click="draft.photoPath = null">Убрать</button>
+      <div>
+        <span class="mb-1 block text-sm font-medium text-ink">Фото</span>
+        <div class="flex items-center gap-3">
+          <img v-if="draft.photoPath" :src="mediaUrl(draft.photoPath)" alt="" class="h-16 w-16 rounded object-cover" />
+          <MediaUploader label="Загрузить фото" @uploaded="onPhoto" />
+          <button v-if="draft.photoPath" type="button" class="text-sm text-red-600" @click="draft.photoPath = null">Убрать</button>
+        </div>
       </div>
       <div class="flex gap-3">
         <button class="bg-gray-900 text-white py-2 px-4 rounded" @click="save">Сохранить</button>
